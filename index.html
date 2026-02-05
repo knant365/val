@@ -9,7 +9,7 @@
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: 135deg, #ff9a9e 0%, #fecfef 50%, #a18cd1 100%);
+      background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #a18cd1 100%);
       color: #333;
       text-align: center;
       min-height: 100vh;
@@ -59,7 +59,6 @@
     #noBtn {
       background: #7e57c2;
       box-shadow: 0 8px #5e35b1;
-      position: relative;
     }
     #noBtn:hover {
       transform: translateY(-5px);
@@ -172,17 +171,6 @@
         confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
       }, 250);
     }
-
-    // Make No button dodge (desktop fun – won't trigger on mobile touch)
-    noBtn.addEventListener('mouseenter', () => {
-      const maxX = window.innerWidth - noBtn.offsetWidth - 50;
-      const maxY = window.innerHeight - noBtn.offsetHeight - 100;
-      const randomX = Math.floor(Math.random() * maxX);
-      const randomY = Math.floor(Math.random() * maxY);
-      noBtn.style.position = 'fixed';
-      noBtn.style.left = randomX + 'px';
-      noBtn.style.top = randomY + 'px';
-    });
 
     // Handle choice + email notification
     function handleChoice(choice) {
