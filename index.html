@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Van's Val 💖</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: 135deg, #ff9a9e 0%, #fecfef 50%, #a18cd1 100%);
+      color: #333;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 3em;
+      color: #6a1b9a;
+      text-shadow: 2px 2px 10px rgba(255,255,255,0.8);
+      margin: 20px 0;
+    }
+    img.cute {
+      max-width: 300px;
+      border-radius: 30px;
+      box-shadow: 0 15px 30px rgba(106,27,154,0.4);
+      margin: 20px auto;
+      border: 6px solid white;
+    }
+    .buttons {
+      margin: 30px 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 15px 50px;
+      font-size: 1.4em;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      color: white;
+      transition: all 0.3s;
+    }
+    #yesBtn {
+      background: #e91e63;
+      box-shadow: 0 8px #c2185b;
+    }
+    #yesBtn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px #ad1457;
+    }
+    #noBtn {
+      background: #7e57c2;
+      box-shadow: 0 8px #5e35b1;
+      position: relative;
+    }
+    #noBtn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px #4527a0;
+    }
+    #msg {
+      font-size: 2.2em;
+      font-weight: bold;
+      margin: 40px 0;
+      min-height: 60px;
+      color: #4a148c;
+    }
+    #musicToggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.3);
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1.1em;
+    }
+    canvas#confetti {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Mobile adjustments */
+    @media screen and (max-width: 480px) {
+      h1 {
+        font-size: 2.4em;
+      }
+      img.cute {
+        max-width: 85%;
+      }
+      button {
+        padding: 14px 40px;
+        font-size: 1.3em;
+      }
+      #msg {
+        font-size: 1.8em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cute image -->
+  <img src="https://thumbs.dreamstime.com/b/charming-illustration-purple-teddy-bear-enjoying-roses-sweet-romantic-design-greeting-cards-invitations-valentine-335395800.jpg" 
+       alt="Cute purple teddy with roses" class="cute">
+
+  <h1>Will you be my Valentine, A? 💖</h1>
+
+  <div class="buttons">
+    <button id="yesBtn">Yes 💖</button>
+    <button id="noBtn">No 😔</button>
+  </div>
+
+  <p id="msg"></p>
+
+  <button id="musicToggle">Play The Night We Met 🎵</button>
+
+  <canvas id="confetti"></canvas>
+
+  <!-- Audio file -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="night.mp3" type="audio/mpeg">
+    Your browser does not support audio.
+  </audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script>
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const msg = document.getElementById('msg');
+    const music = document.getElementById('bgMusic');
+    const toggleBtn = document.getElementById('musicToggle');
+
+    let isPlaying = false;
+    toggleBtn.onclick = () => {
+      if (isPlaying) {
+        music.pause();
+        toggleBtn.textContent = 'Play The Night We Met 🎵';
+      } else {
+        music.play();
+        toggleBtn.textContent = 'Pause Music 🔇';
+      }
+      isPlaying = !isPlaying;
+    };
+
+    // Confetti flood on Yes (10 seconds)
+    function floodConfetti() {
+      const duration = 10 * 1000;
+      const animationEnd = Date.now() + duration;
+      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0, colors: ['#ff9a9e', '#fecfef', '#a18cd1', '#e91e63', '#6a1b9a'] };
+
+      function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      const interval = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+        if (timeLeft <= 0) return clearInterval(interval);
+
+        const particleCount = 70 * (timeLeft / duration);
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+      }, 250);
+    }
+
+    // Make No button dodge (desktop fun – won't trigger on mobile touch)
+    noBtn.addEventListener('mouseenter', () => {
+      const maxX = window.innerWidth - noBtn.offsetWidth - 50;
+      const maxY = window.innerHeight - noBtn.offsetHeight - 100;
+      const randomX = Math.floor(Math.random() * maxX);
+      const randomY = Math.floor(Math.random() * maxY);
+      noBtn.style.position = 'fixed';
+      noBtn.style.left = randomX + 'px';
+      noBtn.style.top = randomY + 'px';
+    });
+
+    // Handle choice + email notification
+    function handleChoice(choice) {
+      yesBtn.disabled = true;
+      noBtn.disabled = true;
+
+      if (choice === 'yes') {
+        msg.innerHTML = "Best option, I guess. 💖";
+        msg.style.color = "#e91e63";
+        floodConfetti();
+      } else {
+        msg.innerHTML = "Why are you lying?";
+        msg.style.color = "#7e57c2";
+      }
+
+      const responseText = choice === 'yes' ? 'Yes 💖' : 'No';
+      fetch("https://formsubmit.co/ajax/ericnanteer44@gmail.com", {
+        method: "POST",
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          subject: `Valentine Response from A: ${responseText}`,
+          message: `A clicked ${responseText} on your Valentine page! Time: ${new Date().toLocaleString()}`
+        })
+      });
+    }
+
+    yesBtn.onclick = () => handleChoice('yes');
+    noBtn.onclick = () => handleChoice('no');
+  </script>
+
+</body>
+</html>
